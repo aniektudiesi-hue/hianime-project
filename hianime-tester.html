@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiAnime API Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-input-group button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-input-group button:hover {
+            background: #764ba2;
+        }
+
+        .search-input-group button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .pagination button {
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pagination button:hover {
+            background: #764ba2;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .anime-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .anime-card-info {
+            padding: 15px;
+        }
+
+        .anime-card-info h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .anime-id {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .view-episodes-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .view-episodes-btn:hover {
+            background: #764ba2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .episode-card {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .episode-card:hover {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+
+        .episode-card h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .episode-id {
+            font-size: 12px;
+            color: #999;
+            word-break: break-all;
+        }
+
+        .player-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .player-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .player-container {
+            background: black;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .player-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .stream-info {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .stream-info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .stream-info strong {
+            color: #667eea;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .language-selector button {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .language-selector button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .language-selector button:hover {
+            border-color: #667eea;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 HiAnime API Tester</h1>
+            <p>Search, browse, and stream anime with episode details</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-input-group">
+                <input type="text" id="searchInput" placeholder="Search for anime..." value="One Piece">
+                <button id="searchBtn">Search</button>
+            </div>
+            <div class="pagination" id="pagination"></div>
+            <div id="stats" class="stats"></div>
+        </div>
+
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+        <div id="animeContainer" class="anime-grid"></div>
+        <div id="noResults" class="no-results" style="display: none;">No anime found. Try a different search.</div>
+    </div>
+
+    <!-- Episodes Modal -->
+    <div id="episodesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Episodes</h2>
+                <span class="close-btn" id="closeModal">&times;</span>
+            </div>
+            <div id="episodesContainer" class="episodes-grid"></div>
+        </div>
+    </div>
+
+    <!-- Player Modal -->
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="playerTitle">Stream Player</h2>
+                <span class="close-btn" id="closePlayer">&times;</span>
+            </div>
+            <div class="language-selector" id="languageSelector"></div>
+            <div class="player-container" id="playerContainer"></div>
+            <div class="stream-info" id="streamInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://hianime.to';
+        let currentPage = 1;
+        let currentSearch = 'One Piece';
+        let allAnime = [];
+
+        // Utility to add CORS headers
+        const fetchWithHeaders = async (url, options = {}) => {
+            const defaultHeaders = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'X-Requested-With': 'XMLHttpRequest',
+            };
+
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    ...defaultHeaders,
+                    ...options.headers,
+                },
+            });
+
+            return response;
+        };
+
+        // Parse HTML response
+        const parseHTML = (html) => {
+            const parser = new DOMParser();
+            return parser.parseFromString(html, 'text/html');
+        };
+
+        // Search anime
+        const searchAnime = async (query, page = 1) => {
+            try {
+                showLoading(true);
+                clearError();
+
+                const url = `${API_BASE}/search?keyword=${encodeURIComponent(query)}&page=${page}`;
+                const response = await fetchWithHeaders(url);
+                const html = await response.text();
+                const doc = parseHTML(html);
+
+                const animeItems = [];
+                const filmItems = doc.querySelectorAll('.film-item');
+
+                filmItems.forEach((item) => {
+                    try {
+                        const nameElement = item.querySelector('h3.film-name a');
+                        const imgElement = item.querySelector('img.film-poster-img');
+
+                        if (nameElement && imgElement) {
+                            const name = nameElement.getAttribute('title');
+                            const href = nameElement.getAttribute('href');
+                            const animeId = href.split('-').pop();
+                            const image = imgElement.getAttribute('data-src') || imgElement.getAttribute('src');
+
+                            animeItems.push({
+                                name,
+                                animeId,
+                                image,
+                                href,
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error parsing anime item:', e);
+                    }
+                });
+
+                allAnime = animeItems;
+                displayAnime(animeItems);
+                updatePagination(page, query);
+                updateStats(animeItems.length, page);
+
+                showLoading(false);
+            } catch (error) {
+                console.error('Search error:', error);
+                showError(`Failed to search anime: ${error.message}`);
+                showLoading(false);
+            }
+        };
+
+        // Display anime cards
+        const displayAnime = (anime) => {
+            const container = document.getElementById('animeContainer');
+            const noResults = document.getElementById('noResults');
+
+            if (anime.length === 0) {
+                container.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            container.innerHTML = anime
+                .map(
+                    (item) => `
+                <div class="anime-card">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+                    <div class="anime-card-info">
+                        <h3>${item.name}</h3>
+                        <div class="anime-id">ID: ${item.animeId}</div>
+                        <button class="view-episodes-btn" onclick="viewEpisodes('${item.animeId}', '${item.name}')">
+                            View Episodes
+                        </button>
+                    </div>
+                </div>
+            `
+                )
+                .join('');
+        };
+
+        // View episodes for an anime
+        const viewEpisodes = async (animeId, animeName) => {
+            try {
+                showLoading(true);
+                const modal = document.getElementById('episodesModal');
+                const container = document.getElementById('episodesContainer');
+
+                document.getElementById('modalTitle').textContent = `Episodes - ${animeName}`;
+
+                const url = `${API_BASE}/ajax/v2/episode/list/${animeId}`;
+                const response = await fetchWithHeaders(url);
+                const data = await response.json();
+
+                const episodes = [];
+                const html = parseHTML(data.html);
+                const episodeItems = html.querySelectorAll('a.ep-item');
+
+                episodeItems.forEach((item) => {
+                    try {
+                        const episodeId = item.getAttribute('data-id');
+                        const episodeNumber = item.getAttribute('data-number');
+                        const episodeNameEl = item.querySelector('div.ep-name');
+                        const episodeName = episodeNameEl ? episodeNameEl.textContent.trim() : '';
+
+                        episodes.push({
+                            episodeId,
+                            episodeNumber,
+                            episodeName,
+                            animeId,
+                            animeName,
+                        });
+                    } catch (e) {
+                        console.error('Error parsing episode:', e);
+                    }
+                });
+
+                container.innerHTML = episodes
+                    .map(
+                        (ep) => `
+                    <div class="episode-card" onclick="getStreamServers('${ep.episodeId}', 'Episode ${ep.episodeNumber}', '${ep.animeId}', '${ep.animeName}')">
+                        <h4>Ep ${ep.episodeNumber}</h4>
+                        <div class="episode-id">${ep.episodeId}</div>
+                        ${ep.episodeName ? `<p style="font-size: 11px; margin-top: 5px;">${ep.episodeName}</p>` : ''}
+                    </div>
+                `
+                    )
+                    .join('');
+
+                modal.classList.add('active');
+                showLoading(false);
+            } catch (error) {
+                console.error('Episodes error:', error);
+                showError(`Failed to fetch episodes: ${error.message}`);
+                showLoading(false);
+            }
+        };
+
+        // Get stream servers for an episode
+        const getStreamServers = async (episodeId, episodeName, animeId, animeName) => {
+            try {
+                showLoading(true);
+                const url = `${API_BASE}/ajax/v2/episode/servers?episodeId=${episodeId}`;
+                const response = await fetchWithHeaders(url);
+                const data = await response.json();
+
+                const html = parseHTML(data.html);
+                const serverItems = html.querySelectorAll('div.server-item');
+
+                const servers = [];
+                serverItems.forEach((item) => {
+                    try {
+                        const serverId = item.getAttribute('data-id');
+                        const serverName = item.textContent.trim();
+                        servers.push({ serverId, serverName });
+                    } catch (e) {
+                        console.error('Error parsing server:', e);
+                    }
+                });
+
+                if (servers.length > 0) {
+                    // Get the first available server
+                    await getStreamSource(servers[0].serverId, episodeName, animeName, episodeId);
+                } else {
+                    showError('No streaming servers available for this episode.');
+                }
+
+                showLoading(false);
+            } catch (error) {
+                console.error('Servers error:', error);
+                showError(`Failed to fetch servers: ${error.message}`);
+                showLoading(false);
+            }
+        };
+
+        // Get streaming source
+        const getStreamSource = async (serverId, episodeName, animeName, episodeId) => {
+            try {
+                showLoading(true);
+                const url = `${API_BASE}/ajax/v2/episode/sources?id=${serverId}`;
+                const response = await fetchWithHeaders(url);
+                const data = await response.json();
+
+                const playerModal = document.getElementById('playerModal');
+                const playerContainer = document.getElementById('playerContainer');
+                const streamInfo = document.getElementById('streamInfo');
+
+                document.getElementById('playerTitle').textContent = `${animeName} - ${episodeName}`;
+
+                // Display stream link
+                if (data.link) {
+                    playerContainer.innerHTML = `<iframe src="${data.link}" allowfullscreen></iframe>`;
+                    streamInfo.innerHTML = `
+                        <p><strong>Episode ID:</strong> ${episodeId}</p>
+                        <p><strong>Stream Link:</strong> <a href="${data.link}" target="_blank">${data.link}</a></p>
+                        <p><strong>Quality:</strong> ${data.quality || 'Auto'}</p>
+                    `;
+                } else {
+                    playerContainer.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">Stream link not available</p>';
+                    streamInfo.innerHTML = `<p style="color: red;">Failed to retrieve stream link</p>`;
+                }
+
+                playerModal.classList.add('active');
+                showLoading(false);
+            } catch (error) {
+                console.error('Stream source error:', error);
+                showError(`Failed to fetch stream: ${error.message}`);
+                showLoading(false);
+            }
+        };
+
+        // Update pagination
+        const updatePagination = (currentPageNum, query) => {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = `
+                <button onclick="searchAnime('${query}', ${Math.max(1, currentPageNum - 1)})" ${currentPageNum === 1 ? 'disabled' : ''}>
+                    ← Previous
+                </button>
+                <span style="color: white; padding: 8px 15px;">Page ${currentPageNum}</span>
+                <button onclick="searchAnime('${query}', ${currentPageNum + 1})">
+                    Next →
+                </button>
+            `;
+        };
+
+        // Update stats
+        const updateStats = (count, page) => {
+            const stats = document.getElementById('stats');
+            stats.textContent = `Found ${count} anime on page ${page}`;
+        };
+
+        // Show/hide loading
+        const showLoading = (show) => {
+            const container = document.getElementById('loadingContainer');
+            if (show) {
+                container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
+            } else {
+                container.innerHTML = '';
+            }
+        };
+
+        // Show error
+        const showError = (message) => {
+            const container = document.getElementById('errorContainer');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        };
+
+        // Clear error
+        const clearError = () => {
+            document.getElementById('errorContainer').innerHTML = '';
+        };
+
+        // Modal controls
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('episodesModal').classList.remove('active');
+        });
+
+        document.getElementById('closePlayer').addEventListener('click', () => {
+            document.getElementById('playerModal').classList.remove('active');
+        });
+
+        // Search button
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                currentSearch = query;
+                currentPage = 1;
+                searchAnime(query, 1);
+            }
+        });
+
+        // Enter key search
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('searchBtn').click();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+            const episodesModal = document.getElementById('episodesModal');
+            const playerModal = document.getElementById('playerModal');
+
+            if (event.target === episodesModal) {
+                episodesModal.classList.remove('active');
+            }
+            if (event.target === playerModal) {
+                playerModal.classList.remove('active');
+            }
+        });
+
+        // Initial search
+        searchAnime('One Piece', 1);
+    </script>
+</body>
+</html>

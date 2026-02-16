@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiAnime Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink: #ff1493;
+            --light-pink: #ff69b4;
+            --black: #0a0a0a;
+            --dark-bg: #1a1a1a;
+            --surface: #2a2a2a;
+            --text: #ffffff;
+            --muted: #b0b0b0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--black);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--surface);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--pink), var(--light-pink));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.3);
+        }
+
+        .title-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .anime-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--light-pink);
+        }
+
+        .episode-name {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* Main Container */
+        .container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .player-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Player Section */
+        .player-section {
+            background: var(--dark-bg);
+            border: 1px solid var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(255, 20, 147, 0.1);
+        }
+
+        .player-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+        }
+
+        .player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--light-pink);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .language-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .lang-btn {
+            flex: 1;
+            background: var(--dark-bg);
+            border: 2px solid var(--surface);
+            color: var(--text);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--pink);
+            background: rgba(255, 20, 147, 0.1);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--pink), var(--light-pink));
+            border-color: var(--pink);
+            color: white;
+        }
+
+        /* Info Section */
+        .info-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--light-pink);
+            word-break: break-all;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .info-value a {
+            color: var(--light-pink);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            background: linear-gradient(135deg, var(--pink), var(--light-pink));
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 20, 147, 0.3);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--surface);
+            border-top-color: var(--pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .controls-section,
+            .info-section {
+                padding: 1.5rem;
+            }
+
+            .language-buttons {
+                flex-direction: column;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+
+            .anime-name {
+                font-size: 0.95rem;
+            }
+
+            .episode-name {
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 0.5rem;
+            }
+
+            .player-wrapper {
+                gap: 1rem;
+            }
+
+            .controls-section,
+            .info-section {
+                padding: 1rem;
+            }
+
+            .info-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="title-info">
+                <div class="anime-name" id="animeNameDisplay">Loading...</div>
+                <div class="episode-name" id="episodeNameDisplay">Loading...</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="player-wrapper">
+            <!-- Player Section -->
+            <div class="player-section">
+                <div class="player-container" id="playerContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Loading player...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <div class="control-group">
+                    <div class="control-label">🎌 Language</div>
+                    <div class="language-buttons">
+                        <button class="lang-btn active" id="subBtn" onclick="switchLanguage('sub')">Japanese (SUB)</button>
+                        <button class="lang-btn" id="dubBtn" onclick="switchLanguage('dub')">English (DUB)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="info-card">
+                    <div class="info-label">📺 Anime</div>
+                    <div class="info-value" id="animeInfo">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">🎬 Episode</div>
+                    <div class="info-value" id="episodeInfo">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">🔑 Episode ID</div>
+                    <div class="info-value" id="episodeIdInfo">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">📡 Provider</div>
+                    <div class="info-value">MegaPlay.buzz</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">🎌 SUB URL</div>
+                    <div class="info-value">
+                        <a id="subUrl" href="#" target="_blank">Open Stream</a>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('subUrl')">Copy URL</button>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">🗣️ DUB URL</div>
+                    <div class="info-value">
+                        <a id="dubUrl" href="#" target="_blank">Open Stream</a>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('dubUrl')">Copy URL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MEGAPLAY_BASE = 'https://megaplay.buzz/stream/s-2';
+        let currentLanguage = 'sub';
+        let episodeId = '';
+        let episodeName = '';
+        let animeName = '';
+
+        // Get URL parameters
+        const getUrlParam = (param) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        };
+
+        // Initialize
+        const init = () => {
+            episodeId = getUrlParam('episodeId');
+            episodeName = decodeURIComponent(getUrlParam('episodeName') || 'Unknown Episode');
+            animeName = decodeURIComponent(getUrlParam('animeName') || 'Unknown Anime');
+
+            // Update display
+            document.getElementById('animeNameDisplay').textContent = animeName;
+            document.getElementById('episodeNameDisplay').textContent = episodeName;
+            document.getElementById('animeInfo').textContent = animeName;
+            document.getElementById('episodeInfo').textContent = episodeName;
+            document.getElementById('episodeIdInfo').textContent = episodeId;
+
+            // Load player
+            loadPlayer();
+        };
+
+        // Load Player
+        const loadPlayer = () => {
+            const url = `${MEGAPLAY_BASE}/${episodeId}/${currentLanguage}`;
+            const container = document.getElementById('playerContainer');
+
+            container.innerHTML = `
+                <iframe 
+                    src="${url}" 
+                    frameborder="0" 
+                    allowfullscreen
+                    allow="autoplay; fullscreen">
+                </iframe>
+            `;
+
+            // Update URLs
+            document.getElementById('subUrl').href = `${MEGAPLAY_BASE}/${episodeId}/sub`;
+            document.getElementById('dubUrl').href = `${MEGAPLAY_BASE}/${episodeId}/dub`;
+        };
+
+        // Switch Language
+        const switchLanguage = (lang) => {
+            currentLanguage = lang;
+            loadPlayer();
+
+            // Update button states
+            document.getElementById('subBtn').classList.toggle('active', lang === 'sub');
+            document.getElementById('dubBtn').classList.toggle('active', lang === 'dub');
+        };
+
+        // Copy to Clipboard
+        const copyToClipboard = (elementId) => {
+            const element = document.getElementById(elementId);
+            const url = element.href;
+
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy URL');
+            });
+        };
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
