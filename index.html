@@ -21,6 +21,7 @@
             --text: #ffffff;
             --muted: #a0a0a0;
             --accent-shadow: rgba(255, 20, 147, 0.4);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -35,10 +36,10 @@
 
         /* Header */
         header {
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.75rem 5%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 5%;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -51,41 +52,52 @@
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
             text-decoration: none;
+            flex-shrink: 0;
         }
 
         .logo-container {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--pink), var(--light-pink));
-            border-radius: 10px;
+            width: 180px; /* Further increased to fit the custom logo perfectly */
+            height: 60px;
+            background: #000000;
+            border: 2px solid var(--pink);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px;
-            box-shadow: 0 4px 15px var(--accent-shadow);
+            padding: 2px 8px;
+            box-shadow: 0 4px 20px var(--accent-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05) rotate(-5deg);
+            border-color: var(--light-pink);
         }
 
         .logo-container img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* Use cover to fill the container with the custom logo's black background */
+            transform: scale(1.1); /* Slight scale to ensure no edges are visible */
         }
 
         .brand-name {
-            font-size: 1.8rem;
-            font-weight: 800;
+            font-size: 2.2rem;
+            font-weight: 900;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px var(--pink);
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
         }
 
         /* Search Bar */
         .search-section {
             flex: 1;
-            max-width: 600px;
+            max-width: 800px;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .search-container {
@@ -97,39 +109,50 @@
 
         #searchInput {
             width: 100%;
-            padding: 0.8rem 1rem 0.8rem 2.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            padding: 0.9rem 1rem 0.9rem 3.2rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
         #searchInput:focus {
             outline: none;
             border-color: var(--pink);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(255, 20, 147, 0.2);
         }
 
         .search-icon {
             position: absolute;
-            left: 1rem;
+            left: 1.2rem;
             color: var(--muted);
+            font-size: 1.1rem;
         }
 
         #searchBtn {
-            padding: 0.8rem 1.8rem;
+            padding: 0.9rem 2.2rem;
             background: linear-gradient(135deg, var(--pink), var(--light-pink));
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             color: white;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+        }
+
+        #searchBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
         }
 
         /* Main Content */
         main {
             flex: 1;
-            padding: 2rem 5%;
+            padding: 2.5rem 5%;
             max-width: 1600px;
             margin: 0 auto;
             width: 100%;
@@ -137,17 +160,17 @@
 
         /* Hero Banner */
         .hero-banner {
-            margin-bottom: 3rem;
-            border-radius: 24px;
+            margin-bottom: 4rem;
+            border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
             position: relative;
         }
 
         .carousel-container {
             position: relative;
             width: 100%;
-            height: 450px;
+            height: 500px;
             background: var(--dark-bg);
         }
 
@@ -156,7 +179,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease-in-out;
             display: flex;
             align-items: flex-end;
             background-size: cover;
@@ -170,166 +193,199 @@
         .carousel-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 40%, transparent 100%);
         }
 
         .carousel-content {
             position: relative;
             z-index: 2;
-            padding: 4rem 3rem;
+            padding: 5rem 4rem;
             width: 100%;
         }
 
         .carousel-title {
             color: white;
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            max-width: 800px;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.8rem;
+            max-width: 900px;
+            line-height: 1.1;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
         .carousel-action-btn {
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             background: var(--pink);
             color: white;
-            border-radius: 50px;
-            font-weight: 700;
+            border-radius: 60px;
+            font-weight: 800;
             cursor: pointer;
             border: none;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+        }
+
+        .carousel-action-btn:hover {
+            transform: scale(1.05);
+            background: var(--light-pink);
         }
 
         .carousel-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.3);
+            width: 55px;
+            height: 55px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             cursor: pointer;
             z-index: 5;
             font-size: 1.5rem;
+            transition: var(--transition);
         }
 
-        .carousel-nav.prev { left: 1.5rem; }
-        .carousel-nav.next { right: 1.5rem; }
+        .carousel-nav:hover {
+            background: var(--pink);
+            border-color: var(--pink);
+        }
+
+        .carousel-nav.prev { left: 2rem; }
+        .carousel-nav.next { right: 2rem; }
 
         .carousel-controls {
             position: absolute;
-            bottom: 2rem;
-            right: 3rem;
+            bottom: 2.5rem;
+            right: 4rem;
             display: flex;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .carousel-dot {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.3);
             cursor: pointer;
+            transition: var(--transition);
         }
 
         .carousel-dot.active {
             background: var(--pink);
+            transform: scale(1.2);
         }
 
         /* Section Title */
         .section-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 2.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .section-title::before {
             content: '';
-            width: 6px;
-            height: 32px;
+            width: 8px;
+            height: 38px;
             background: var(--pink);
-            border-radius: 3px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px var(--pink);
         }
 
-        /* Anime Grid */
+        /* Anime Grid - Forced 2 columns on ALL screens as requested */
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-bottom: 5rem;
         }
 
         .anime-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
         }
 
         .anime-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-12px);
             border-color: var(--pink);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
 
         .anime-image-container {
             width: 100%;
-            height: 280px;
+            height: 450px;
             position: relative;
+            overflow: hidden;
         }
 
         .anime-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .anime-card:hover .anime-image {
+            transform: scale(1.1);
         }
 
         .anime-info {
-            padding: 1.25rem;
+            padding: 1.5rem;
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
         }
 
         .anime-name {
-            font-weight: 700;
-            font-size: 1.05rem;
+            font-weight: 800;
+            font-size: 1.3rem;
             color: var(--text);
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            height: 2.8em;
+            height: 3em;
+            line-height: 1.4;
         }
 
         .view-episodes-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
-            padding: 0.75rem;
-            border-radius: 10px;
-            font-weight: 700;
+            padding: 0.85rem;
+            border-radius: 12px;
+            font-weight: 800;
             margin-top: auto;
             text-align: center;
+            transition: var(--transition);
         }
 
         .anime-card:hover .view-episodes-btn {
             background: var(--pink);
+            border-color: var(--pink);
+            transform: scale(1.02);
         }
 
         /* Modal */
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(15px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -342,168 +398,181 @@
         .modal-content {
             background: var(--surface);
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             max-height: 85vh;
-            border-radius: 24px;
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
         }
 
         .modal-header {
-            padding: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
         }
 
         .close-modal {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: var(--pink);
+            transform: rotate(90deg);
         }
 
         .episodes-list {
-            padding: 2rem;
+            padding: 2.5rem;
             overflow-y: auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1.2rem;
         }
 
         .episode-item {
             background: rgba(255, 255, 255, 0.05);
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: 12px;
-            cursor: pointer;
             text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
 
         .episode-item:hover {
             background: var(--pink);
+            border-color: var(--pink);
+            transform: scale(1.05);
         }
 
-        /* Footer */
-        footer {
-            background: #080808;
-            padding: 4rem 5% 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .creator-shadow {
-            color: var(--pink);
-            font-weight: 800;
-            text-shadow: 0 0 8px var(--pink);
-        }
-
+        /* Loading Spinner */
         .loading {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: center;
-            padding: 3rem;
-            width: 100%;
+            padding: 4rem;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--pink);
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 20, 147, 0.1);
+            border-top: 5px solid var(--pink);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .anime-grid { gap: 1rem; }
+            .anime-image-container { height: 250px; }
+            .anime-name { font-size: 1rem; }
+            .carousel-container { height: 350px; }
+            .carousel-title { font-size: 2rem; }
+            header { flex-wrap: wrap; }
+            .search-section { width: 100%; order: 3; }
+        }
     </style>
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo-section">
-            <div class="logo-container"><img src="logo.png" alt="Logo"></div>
-            <div class="brand-name">Shadow</div>
+        <a href="#" class="logo-section" onclick="location.reload()">
+            <div class="logo-container">
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663358997898/sFCppeQsjVYMiAGl.png" alt="HiAnime">
+            </div>
+            <span class="brand-name">HiAnime</span>
         </a>
+        
         <div class="search-section">
             <div class="search-container">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search for anime...">
+                <input type="text" id="searchInput" placeholder="Search anime...">
             </div>
             <button id="searchBtn">Search</button>
         </div>
     </header>
 
     <main>
-        <div class="hero-banner">
+        <section class="hero-banner">
             <div class="carousel-container" id="carouselSlides">
-                <div class="loading"><div class="spinner"></div></div>
+                <!-- Slides will be injected here -->
             </div>
             <button class="carousel-nav prev" onclick="prevSlide()">❮</button>
             <button class="carousel-nav next" onclick="nextSlide()">❯</button>
-            <div class="carousel-controls" id="carouselDots"></div>
-        </div>
+            <div class="carousel-controls" id="carouselDots">
+                <!-- Dots will be injected here -->
+            </div>
+        </section>
 
-        <h2 class="section-title">Recently Updated</h2>
-        <div id="animeGrid" class="anime-grid">
+        <h2 class="section-title">Latest Updates</h2>
+        <div class="anime-grid" id="animeGrid">
             <div class="loading"><div class="spinner"></div></div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <div>
-                <div class="brand-name" style="font-size: 1.5rem; margin-bottom: 1rem;">HiAnime</div>
-                <p style="color: var(--muted); max-width: 400px;">Stream your favorite anime in high quality.</p>
-            </div>
-            <div>
-                <p>Created by <span class="creator-shadow">Aniket Shadow</span></p>
-                <p>Contact: <a href="mailto:a49304@gmail.com" style="color: var(--pink);">a49304@gmail.com</a></p>
-            </div>
-        </div>
-    </footer>
-
-    <div id="episodesModal" class="modal">
+    <div class="modal" id="episodesModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">Episodes</h3>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
+                <h2 id="modalTitle">Anime Title</h2>
+                <button class="close-modal" onclick="closeModal()">×</button>
             </div>
-            <div id="episodesList" class="episodes-list"></div>
+            <div class="episodes-list" id="episodesList">
+                <!-- Episodes will be injected here -->
+            </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = window.location.origin + '/api';
+        const API_BASE = 'https://api-hianime.manus.im';
         let carouselIndex = 0;
         let trendingAnime = [];
 
-        const decodeHTML = (str) => {
+        const decodeHTML = (html) => {
             const txt = document.createElement('textarea');
-            txt.innerHTML = str;
+            txt.innerHTML = html;
             return txt.value;
         };
 
         const fixImageUrl = (url) => {
-            if (!url) return '';
-            return url.startsWith('//') ? 'https:' + url : url;
+            if (!url) return 'assets/logo.png';
+            if (url.startsWith('//')) return 'https:' + url;
+            return url;
         };
 
         const loadHome = async () => {
             try {
-                // Load Trending for Hero
                 const trendingRes = await fetch(`${API_BASE}/anime/trending`);
                 const trendingHtml = await trendingRes.text();
                 trendingAnime = parseAnimeItems(trendingHtml).slice(0, 10);
                 displayHero(trendingAnime);
 
-                // Load Latest for Grid
                 const latestRes = await fetch(`${API_BASE}/anime/latest`);
                 const latestHtml = await latestRes.text();
                 const latest = parseAnimeItems(latestHtml);
@@ -515,7 +584,6 @@
             const items = [];
             const container = document.createElement('div');
             container.innerHTML = html;
-            
             const cards = container.querySelectorAll('.flw-item');
             cards.forEach(card => {
                 const img = card.querySelector('img');
@@ -523,9 +591,7 @@
                 if (img && link) {
                     const href = link.getAttribute('href');
                     const dataId = link.getAttribute('data-id');
-                    // Extract numeric ID: either from data-id or from the end of the slug
                     const id = dataId || href.split('-').pop().split('?')[0];
-                    
                     items.push({
                         image: fixImageUrl(img.getAttribute('data-src') || img.getAttribute('src')),
                         name: decodeHTML(link.getAttribute('title') || link.textContent.trim()),
@@ -540,7 +606,6 @@
             const container = document.getElementById('carouselSlides');
             const dots = document.getElementById('carouselDots');
             if (list.length === 0) return;
-
             container.innerHTML = list.slice(0, 5).map((anime, i) => `
                 <div class="carousel-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${anime.image}')">
                     <div class="carousel-overlay"></div>
@@ -550,7 +615,6 @@
                     </div>
                 </div>
             `).join('');
-
             dots.innerHTML = list.slice(0, 5).map((_, i) => `<div class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
             setInterval(nextSlide, 6000);
         };
@@ -576,73 +640,4 @@
 
         const viewEpisodes = async (id, name) => {
             document.getElementById('modalTitle').textContent = name;
-            document.getElementById('episodesList').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            document.getElementById('episodesModal').classList.add('show');
-
-            try {
-                const res = await fetch(`${API_BASE}/anime/episodes?animeId=${id}`);
-                const data = await res.json();
-                
-                const temp = document.createElement('div');
-                temp.innerHTML = data.html;
-                
-                // Robust parsing: Look for any element with ep-item class, regardless of nesting
-                const eps = temp.querySelectorAll('.ep-item');
-                
-                if (eps.length === 0) {
-                    document.getElementById('episodesList').innerHTML = '<p>No episodes found.</p>';
-                    return;
-                }
-
-                document.getElementById('episodesList').innerHTML = Array.from(eps).map(ep => `
-                    <div class="episode-item" onclick="playEpisode('${ep.getAttribute('data-id')}', '${ep.getAttribute('data-number')}', '${name.replace(/'/g, "\\'")}')">
-                        EP ${ep.getAttribute('data-number')}
-                    </div>
-                `).join('');
-            } catch (err) { 
-                console.error(err);
-                document.getElementById('episodesList').innerHTML = '<p>Error loading episodes.</p>';
-            }
-        };
-
-        const playEpisode = (epId, epNum, animeName) => {
-            window.location.href = `player.html?episodeId=${epId}&episodeName=Episode ${epNum}&animeName=${encodeURIComponent(animeName)}`;
-        };
-
-        const closeModal = () => document.getElementById('episodesModal').classList.remove('show');
-
-        const nextSlide = () => {
-            carouselIndex = (carouselIndex + 1) % 5;
-            updateCarousel();
-        };
-
-        const prevSlide = () => {
-            carouselIndex = (carouselIndex - 1 + 5) % 5;
-            updateCarousel();
-        };
-
-        const goToSlide = (i) => {
-            carouselIndex = i;
-            updateCarousel();
-        };
-
-        const updateCarousel = () => {
-            document.querySelectorAll('.carousel-slide').forEach((s, i) => s.classList.toggle('active', i === carouselIndex));
-            document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
-        };
-
-        document.getElementById('searchBtn').onclick = async () => {
-            const q = document.getElementById('searchInput').value;
-            if (!q) return;
-            document.getElementById('animeGrid').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            try {
-                const res = await fetch(`${API_BASE}/anime/search?keyword=${encodeURIComponent(q)}`);
-                const html = await res.text();
-                displayGrid(parseAnimeItems(html));
-            } catch (err) { console.error(err); }
-        };
-
-        window.onload = loadHome;
-    </script>
-</body>
-</html>
+            document.getElementById('episod
