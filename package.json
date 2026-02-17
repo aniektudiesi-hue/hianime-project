@@ -1,0 +1,13 @@
+{
+  "name": "hianime-project",
+  "version": "1.0.0",
+  "description": "Updated HiAnime project with MegaPlay provider support.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
